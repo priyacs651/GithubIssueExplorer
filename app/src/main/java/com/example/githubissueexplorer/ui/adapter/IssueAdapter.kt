@@ -41,7 +41,7 @@ class IssueAdapter(private val context: Context) : RecyclerView.Adapter<IssueAda
         fun bind(issueResponseItem: IssueResponseItem) {
             binding.issueResponseItem = issueResponseItem
             binding.tvCreatedAtValue.text = formatDate(issueResponseItem.created_at, "MM-dd-yyyy")
-            Glide.with(binding.img).load(issueResponseItem.user.avatar_url).into(binding.img)
+            Glide.with(binding.img).load(issueResponseItem.user.avatar_url).placeholder(R.drawable.ic_placeholder).into(binding.img)
         }
 
 
