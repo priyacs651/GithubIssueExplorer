@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GitHub Issue Explorer</string>
+    <string name="title">Title</string>
+    <string name="name">Name:</string>
+    <string name="createdAt">Created at:</string>
+    <string name="description">Description</string>
+    <string name="data_not_found">Data not found</string>
+</resources>
