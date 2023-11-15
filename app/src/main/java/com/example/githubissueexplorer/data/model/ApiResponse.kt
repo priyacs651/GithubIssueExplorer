@@ -1,138 +1,106 @@
 package com.example.githubissueexplorer.data.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
-@Entity
-data class IssueResponseItem(
-    @PrimaryKey
-    val id: Int,
-    val title: String,
-    val body: String,
-    val created_at: String,
-    @Embedded
-    val user: User,
 
-    @Ignore
-    val labels: List<Label>,
-    @Ignore
-    val active_lock_reason: Any?,
-    @Ignore
-    val assignee: Any?,
-    @Ignore
-    val assignees: List<Any>,
-    @Ignore
-    val author_association: String?,
-    @Ignore
-    val closed_at: Any?,
-    @Ignore
-    val comments: String,
-    @Ignore
-    val comments_url: Boolean,
-    @Ignore
-    val draft: String,
-    @Ignore
-    val events_url: String,
-    @Ignore
-    val html_url: String,
-    @Ignore
-    val labels_url: String,
-    @Ignore
-    val locked: Boolean,
-    @Ignore
-    val milestone: Any?,
-    @Ignore
-    val node_id: String,
-    @Ignore
-    val number: Int,
-    @Ignore
-    val performed_via_github_app: Any?,
-    @Ignore
-    val pull_request: PullRequest,
-    @Ignore
-    val reactions: Reactions,
-    @Ignore
-    val repository_url: String,
-    @Ignore
-    val state: String,
-    @Ignore
-    val state_reason: String,
-    @Ignore
-    val timeline_url: String,
-    @Ignore
-    val updated_at: String,
-    @Ignore
-    val url: String,
-) {
-    constructor(id: Int, title: String, body: String, created_at: String, user: User):this(id, title, body, created_at, user,
-        emptyList(),null,null,
-        emptyList(),"",null,"",false,"","",
-        "","",false,null,"",0,null,
-        PullRequest("","",null,"",""),
-        Reactions(0,0,0,0,0,0,0,0,0,""),"","","","","",""
-    )
-}
+import io.realm.RealmAny
+import io.realm.RealmList
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
-data class Label(
-    val id: Long,
-    val color: String,
-    val default: Boolean,
-    val description: String,
+import io.realm.annotations.RealmClass
 
-    val name: String,
-    val node_id: String,
-    val url: String
-)
+@RealmClass
+open class IssueResponseItem  (
+    @PrimaryKey()
+    var id: Int = 0,
+    var title: String = "",
+    var body: String? = "",
+    var created_at: String = "",
+    var user: UserRealm? = null,
 
-data class PullRequest(
-    val diff_url: String,
-    val html_url: String,
-    val merged_at: Any?,
-    val patch_url: String,
-    val url: String
-)
+    var labels: RealmList<LabelRealm> = RealmList(),
+    var active_lock_reason: String? = null,
+    var assignee: RealmAny? = null,
+    var assignees: RealmList<RealmAny>?= null,
 
-data class Reactions(
-    @SerializedName("+1")
-    val n1: Int,
-    @SerializedName("-1")
-    val n2: Int,
-    val confused: Int,
-    val eyes: Int,
-    val heart: Int,
-    val hooray: Int,
-    val laugh: Int,
-    val rocket: Int,
-    val total_count: Int,
-    val url: String
-)
+    var author_association: String? = null,
+    var closed_at: RealmAny? = null,
+    var comments: String = "",
+    var comments_url: Boolean = false,
+    var draft: String = "",
+    var events_url: String = "",
+    var html_url: String = "",
+    var labels_url: String = "",
+    var locked: Boolean = false,
+    var milestone: RealmAny? = null,
+    var node_id: String = "",
+    var number: Int = 0,
+    var performed_via_github_app: RealmAny? = null,
+    var pull_request: PullRequestRealm? = null,
+    var reactions: ReactionsRealm? = null,
+    var repository_url: String = "",
+    var state: String = "",
+    var state_reason: String? = "",
+    var timeline_url: String = "",
+    var updated_at: String = "",
+    var url: String = "",
+): RealmObject()
 
-data class User(
-    val avatar_url: String,
-    val events_url: String,
-    val followers_url: String,
-    val following_url: String,
-    val gists_url: String,
-    val gravatar_id: String,
-    val html_url: String,
-    @ColumnInfo(name = "userId")
-    val id: Int,
-    val login: String,
-    val node_id: String,
-    val organizations_url: String,
-    val received_events_url: String,
-    val repos_url: String,
-    val site_admin: Boolean,
-    val starred_url: String,
-    val subscriptions_url: String,
-    val type: String,
-    val url: String
-)
+@RealmClass
+open class LabelRealm (
+    var id: Long = 0,
+    var color: String = "",
+    var default: Boolean = false,
+    var description: String = "",
+    var name: String = "",
+    var node_id: String = "",
+    var url: String = "") : RealmObject()
 
+
+@RealmClass
+open class PullRequestRealm(
+    var diff_url: String = "",
+    var html_url: String = "",
+    var merged_at: RealmAny? = null,
+    var patch_url: String = "",
+    var url: String = "",
+):RealmObject()
+
+@RealmClass
+open class ReactionsRealm (
+    var n1: Int = 0,
+    var n2: Int = 0,
+    var confused: Int = 0,
+    var eyes: Int = 0,
+    var heart: Int = 0,
+    var hooray: Int = 0,
+    var laugh: Int = 0,
+    var rocket: Int = 0,
+    var total_count: Int = 0,
+    var url: String = ""
+): RealmObject()
+
+@RealmClass
+open class UserRealm  (
+    var avatar_url: String = "",
+    var events_url: String = "",
+    var followers_url: String = "",
+    var following_url: String = "",
+    var gists_url: String = "",
+    var gravatar_id: String = "",
+    var html_url: String = "",
+    var id: Int = 0,
+    var login: String = "",
+    var node_id: String = "",
+    var organizations_url: String = "",
+    var received_events_url: String = "",
+    var repos_url: String = "",
+    var site_admin: Boolean = false,
+    var starred_url: String = "",
+    var subscriptions_url: String = "",
+    var type: String = "",
+    var url: String = "",
+): RealmObject()
 
 sealed class ApiResponse<out T> {
     data class Success<out T>(val data: T) : ApiResponse<T>()

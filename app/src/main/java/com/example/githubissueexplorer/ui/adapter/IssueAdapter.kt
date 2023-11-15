@@ -1,10 +1,6 @@
 package com.example.githubissueexplorer.ui.adapter
-
-import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
@@ -14,13 +10,14 @@ import com.example.githubissueexplorer.databinding.IssueListLytBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class IssueAdapter(private val context: Context) : RecyclerView.Adapter<IssueAdapter.IssueViewHolder>() {
+class IssueAdapter(private val onClickListner: OnClickListner) :
+    RecyclerView.Adapter<IssueAdapter.IssueViewHolder>() {
     private var list = emptyList<IssueResponseItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssueViewHolder {
         val binding =
             IssueListLytBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return IssueViewHolder(binding, context)
+        return IssueViewHolder(binding,onClickListner)
     }
 
     override fun getItemCount(): Int {
@@ -36,20 +33,31 @@ class IssueAdapter(private val context: Context) : RecyclerView.Adapter<IssueAda
         holder.bind(list.get(position))
     }
 
-    class IssueViewHolder(val binding: IssueListLytBinding, val context: Context) : ViewHolder(binding.root) {
-
+    class IssueViewHolder(
+        val binding: IssueListLytBinding,
+        val onClickListener: OnClickListner
+    ) : ViewHolder(binding.root) {
         fun bind(issueResponseItem: IssueResponseItem) {
             binding.issueResponseItem = issueResponseItem
-            binding.tvCreatedAtValue.text = formatDate(issueResponseItem.created_at, "MM-dd-yyyy")
-            Glide.with(binding.img).load(issueResponseItem.user.avatar_url).placeholder(R.drawable.ic_placeholder).into(binding.img)
+            binding.tvCreatedAtValue.text = formatDate(issueResponseItem.created_at, )
+            Glide.with(binding.img).load(issueResponseItem.user?.avatar_url)
+                .placeholder(R.drawable.ic_placeholder).into(binding.img)
+            setListener(issueResponseItem)
+        }
+
+        private fun setListener(issueResponseItem: IssueResponseItem) {
+
+            binding.root.setOnClickListener{
+                onClickListener.onItemClicked(issueResponseItem.id)
+            }
         }
 
 
-        private fun formatDate(originalDate: String, desiredFormat: String): String {
+        private fun formatDate(originalDate: String): String {
             try {
                 val inputDateFormat =
                     SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-                val outputDateFormat = SimpleDateFormat(desiredFormat, Locale.getDefault())
+                val outputDateFormat = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
 
                 val date = inputDateFormat.parse(originalDate)
                 if (date != null) {
@@ -62,4 +70,8 @@ class IssueAdapter(private val context: Context) : RecyclerView.Adapter<IssueAda
             return originalDate
         }
     }
+}
+
+interface OnClickListner {
+    fun onItemClicked(position: Int)
 }

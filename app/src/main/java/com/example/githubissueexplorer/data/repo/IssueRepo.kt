@@ -5,5 +5,6 @@ import com.example.githubissueexplorer.data.model.IssueResponseItem
 
 interface IssueRepo {
     suspend fun getIssuesFromRemote():ApiResponse<List<IssueResponseItem>>
-    suspend fun getIssuesFromDb():List<IssueResponseItem>
+   suspend fun getIssuesFromLocal():List<IssueResponseItem>
+   suspend fun deleteIssueFromLocal(id: Int)
 }

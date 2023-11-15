@@ -1,5 +1,6 @@
 package com.example.githubissueexplorer.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -12,10 +13,11 @@ import com.example.githubissueexplorer.NetworkManager
 import com.example.githubissueexplorer.R
 import com.example.githubissueexplorer.databinding.HomeLytBinding
 import com.example.githubissueexplorer.ui.adapter.IssueAdapter
+import com.example.githubissueexplorer.ui.adapter.OnClickListner
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeAct : ComponentActivity() {
+class HomeAct : ComponentActivity(),OnClickListner{
     private lateinit var binding: HomeLytBinding
     private lateinit var issueViewModel: IssueViewModel
     private lateinit var issueAdapter: IssueAdapter
@@ -27,6 +29,7 @@ class HomeAct : ComponentActivity() {
         initNetworkObserver()
         initAdapter()
         initObserver()
+
     }
 
     private fun initNetworkObserver() {
@@ -35,10 +38,10 @@ class HomeAct : ComponentActivity() {
             showProgress(true)
             if(it == true){
                 Toast.makeText(this,"Network is available",Toast.LENGTH_SHORT).show()
-                issueViewModel.getAllDataFromRetrofit()
+                issueViewModel.getAllDataFromRemote()
             }else{
                 Toast.makeText(this,"Network is not available loading locally available data",Toast.LENGTH_SHORT).show()
-                issueViewModel.getAllDataFromDb()
+                issueViewModel.getAllDataFromLocal()
             }
 
         }
@@ -46,7 +49,7 @@ class HomeAct : ComponentActivity() {
 
 
     private fun initObserver() {
-        issueViewModel.issueResponseLiveData.observe(this, Observer { issueList ->
+        issueViewModel.issueResponseLiveData.observe(this,Observer{issueList->
             showProgress(false)
             issueAdapter.setUpdate(issueList)
             binding.apply {
@@ -79,6 +82,21 @@ class HomeAct : ComponentActivity() {
 
     fun showProgress(showProgress: Boolean) {
         binding.progressBar.visibility = if (showProgress) View.VISIBLE else View.GONE
+    }
+
+    override fun onItemClicked(id: Int) {
+        deleteAlterDialog(id)
+        issueViewModel.getAllDataFromLocal()
+
+    }
+
+     private fun deleteAlterDialog(id: Int) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Delete")
+        builder.setMessage("Do you want to delete this item?")
+        builder.setPositiveButton("Yes") { dialog, which -> issueViewModel.deleteIssueFromLocal(id) }
+        builder.setNegativeButton("No") { dialog, which ->  dialog.cancel() }
+        builder.create().show()
     }
 
 }
