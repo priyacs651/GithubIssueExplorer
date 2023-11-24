@@ -118,8 +118,7 @@ class HomeAct : ComponentActivity(), OnClickListner {
     val builder = AlertDialog.Builder(this)
     builder.setView(updateIssueListLytBinding.root)
     builder.setPositiveButton("update") { dialog, which ->
-      issueViewModel.updateIssueFromLocal(
-        id,
+      issueViewModel.updateIssueFromLocal(id,
         updateIssueListLytBinding.etName.text.toString(),
         updateIssueListLytBinding.etTitle.text.toString()
       )

@@ -16,8 +16,13 @@ object RealmModule {
   @Singleton
   fun providesRealmDatabase(): Realm {
     val config = RealmConfiguration
-      .Builder(schema = setOf(IssueResponseItemModel::class, UserModel::class))
-      .name("Issue_Explorer").deleteRealmIfMigrationNeeded().build()
+      .Builder(schema = IssueModule.schema ).schemaVersion(2).name("Issue_Explorer")
+      .build()
     return Realm.open(config)
+  }
+}
+class IssueModule{
+  companion object{
+    val schema = setOf(IssueResponseItemModel::class, UserModel::class)
   }
 }

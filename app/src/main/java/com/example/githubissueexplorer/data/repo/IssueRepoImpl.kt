@@ -1,6 +1,7 @@
 package com.example.githubissueexplorer.data.repo
 
 import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
 import com.example.githubissueexplorer.data.model.ApiResponse
 import com.example.githubissueexplorer.data.model.IssueResponseItemModel
 import com.example.githubissueexplorer.data.remote.IssueService
@@ -10,8 +11,11 @@ import io.realm.kotlin.UpdatePolicy.ALL
 import io.realm.kotlin.ext.isManaged
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.mongodb.kbson.ObjectId
 
 import javax.inject.Inject
@@ -23,13 +27,12 @@ class IssueRepoImpl @Inject constructor(
 ) : IssueRepo {
 
   override suspend fun getIssuesFromRemote(): ApiResponse<List<IssueResponseItemModel>> {
-    val response = isuueService.getAllIssue().body()
-    return response?.let {
-      insertIssueIntoLocal(it)
-      ApiResponse.Success(it)
-    } ?: kotlin.run {
-      ApiResponse.Failure("Please try again later")
-    }
+   return withTimeoutOrNull(60000){
+      isuueService.getAllIssue().body()?.let {
+        insertIssueIntoLocal(it)
+        ApiResponse.Success(it)
+      }?: ApiResponse.Failure("Please try again later")
+    }?: ApiResponse.Failure("Request timed out")
   }
 
   override suspend fun getIssuesFromLocal(): List<IssueResponseItemModel> {
@@ -38,14 +41,12 @@ class IssueRepoImpl @Inject constructor(
         val list = realm.query<IssueResponseItemModel>().find()
         list
       }
-
     }
   }
 
   override suspend fun deleteIssueFromLocal(id: Int): Unit = withContext(Dispatchers.IO) {
 
     realm.write {
-
           val frozenObject = realm.query<IssueResponseItemModel>("id == $0", id).find().first()
           val liveObject = findLatest(frozenObject)
           liveObject?.let { delete(it) }
