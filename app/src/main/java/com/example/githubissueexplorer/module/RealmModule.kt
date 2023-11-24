@@ -1,5 +1,6 @@
 package com.example.githubissueexplorer.module
 import com.example.githubissueexplorer.data.model.IssueResponseItemModel
+import com.example.githubissueexplorer.data.model.Label
 import com.example.githubissueexplorer.data.model.UserModel
 import dagger.Module
 import dagger.Provides
@@ -16,13 +17,13 @@ object RealmModule {
   @Singleton
   fun providesRealmDatabase(): Realm {
     val config = RealmConfiguration
-      .Builder(schema = IssueModule.schema ).schemaVersion(2).name("Issue_Explorer")
+      .Builder(schema = IssueModule.schema ).schemaVersion(3).name("Issue_Explorer")
       .build()
     return Realm.open(config)
   }
 }
 class IssueModule{
   companion object{
-    val schema = setOf(IssueResponseItemModel::class, UserModel::class)
+    val schema = setOf(IssueResponseItemModel::class, UserModel::class,Label::class)
   }
 }

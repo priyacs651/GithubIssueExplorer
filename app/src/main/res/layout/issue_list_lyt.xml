@@ -109,7 +109,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
-                android:text=""
+                android:text="@{issueResponseItemModel.nodeId}"
                 app:layout_constraintStart_toEndOf="@id/tv_node_id"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_node_id"

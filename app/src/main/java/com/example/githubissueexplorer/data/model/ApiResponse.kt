@@ -19,9 +19,17 @@ class IssueResponseItemModel() : RealmObject {
   @SerializedName("created_at")
   var createdAt: String = ""
   var user: UserModel? = null
-  // added new field v1
+
+  // added new field v2
   @SerializedName("node_id")
   var nodeId : String = ""
+
+  // added new fields v3
+
+  @SerializedName("closed_at")
+  var closedAt: RealmAny? = null
+  var comments: String = ""
+  var labels :RealmList<Label>? = null
 
 }
 
@@ -29,6 +37,19 @@ class UserModel() : RealmObject {
   @SerializedName("avatar_url")
   var avatarUrl: String = ""
   var login: String = ""
+}
+
+
+class Label() :RealmObject{
+  var id: Long = 0
+  var color: String = ""
+  var default: Boolean = false
+  var description: String = ""
+
+  var name: String = ""
+  var node_id: String = ""
+  var url: String =""
+
 }
 
 
